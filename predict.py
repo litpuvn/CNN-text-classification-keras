@@ -54,12 +54,20 @@ output = Dense(units=2, activation='softmax')(dropout)
 # this creates a model that includes
 model = Model(inputs=inputs, outputs=output)
 
-checkpoint = ModelCheckpoint('output/weights.{epoch:03d}-{val_acc:.4f}.hdf5', monitor='val_acc', verbose=1, save_best_only=True, mode='auto')
-adam = Adam(lr=1e-4, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
 
-model.compile(optimizer=adam, loss='binary_crossentropy', metrics=['accuracy'])
-print("Traning Model...")
-model.fit(X_train, y_train, batch_size=batch_size, epochs=epochs, verbose=1, callbacks=[checkpoint], validation_data=(X_test, y_test))  # starts training
+# checkpoint = ModelCheckpoint('weights.{epoch:03d}-{val_acc:.4f}.hdf5', monitor='val_acc', verbose=1, save_best_only=True, mode='auto')
+# adam = Adam(lr=1e-4, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
+#
+# model.compile(optimizer=adam, loss='binary_crossentropy', metrics=['accuracy'])
+# print("Traning Model...")
+# model.fit(X_train, y_train, batch_size=batch_size, epochs=epochs, verbose=1, callbacks=[checkpoint], validation_data=(X_test, y_test))  # starts training
+#
+#
 
+model.load_weights("output/weights.009-0.7567.hdf5")
+y_hat_test = model.predict(X_test)
 
-
+for item_x in X_test:
+    transpose_input = item_x.reshape(1, sequence_length)
+    y_hat = model.predict(transpose_input)
+    print(y_hat)
