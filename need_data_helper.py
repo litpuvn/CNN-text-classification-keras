@@ -4,6 +4,7 @@ from data_helpers import build_input_data
 from data_helpers import clean_str
 import numpy as np
 import csv
+import statistics
 
 
 def load_need_and_labels():
@@ -57,8 +58,18 @@ def build_need_input_data(sentences, labels, vocabulary):
 
     # index to word
     tmp_labels = []
+    max_label_per_day = 0
+    min_label_per_day = 71
+    daily_size = []
     for l in labels:
-        tmp_labels = list(set(tmp_labels + l.split()))
+        split_label = l.split()
+        daily_size.append(len(split_label))
+        tmp_labels = list(set(tmp_labels + split_label))
+
+    daily_size = sorted(daily_size)
+    print('max label per day:', daily_size[len(daily_size)-1])
+    print('min label per day:', daily_size[0])
+    print('average label per day:', statistics.mean(daily_size))
 
     label_voc_inv = sorted(tmp_labels)
     # word to index
