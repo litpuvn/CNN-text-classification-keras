@@ -7,14 +7,17 @@ import csv
 import statistics
 
 
-def load_need_and_labels():
+def load_need_and_labels(dataset:str):
     """
        Loads polarity data from files, splits the data into words and generates labels.
        Returns split sentences and labels.
        """
     my_x = []
     my_y = []
-    with open('need_data/fixed_need_dataset.csv', newline='') as csvfile:
+
+    path = 'need_data/' + dataset + '_fixed_need_dataset.csv'
+
+    with open(path, newline='') as csvfile:
         reader = csv.reader(csvfile, delimiter=',')
         for idx, row in enumerate(reader):
             if idx < 1:
@@ -89,13 +92,13 @@ def build_need_input_data(sentences, labels, vocabulary):
     y = np.array(my_y)
     return [x, y], label_voc, label_voc_inv
 
-def load_need_data():
+def load_need_data(dataset:str):
     """
     Loads and preprocessed data for the dataset.
     Returns input vectors, labels, vocabulary, and inverse vocabulary.
     """
     # Load and preprocess data
-    sentences, labels = load_need_and_labels()
+    sentences, labels = load_need_and_labels(dataset=dataset)
     sentences_padded = sentences # don't have to pad sentences
     # sentences_padded = pad_sentences(sentences)
     vocabulary, vocabulary_inv = build_vocab(sentences_padded)
@@ -104,4 +107,3 @@ def load_need_data():
     return [x, y, vocabulary, vocabulary_inv, label_voc, label_voc_inv]
 
 
-load_need_data()

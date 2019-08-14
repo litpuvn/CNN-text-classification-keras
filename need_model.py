@@ -10,7 +10,8 @@ from data_helpers import load_data
 from need_data_helper import  load_need_data
 
 print('Loading data')
-x, y, vocabulary, vocabulary_inv, label_voc, label_voc_inv = load_need_data()
+dataset = 'harvey'
+x, y, vocabulary, vocabulary_inv, label_voc, label_voc_inv = load_need_data(dataset=dataset)
 
 # x.shape -> (10662, 56)
 # y.shape -> (10662, 2)
@@ -66,7 +67,7 @@ output = Dense(units=label_size, activation='softmax')(dropout)
 # this creates a model that includes
 model = Model(inputs=inputs, outputs=output)
 
-checkpoint = ModelCheckpoint('output/cross_entropy/weights.{epoch:03d}-{val_acc:.4f}.hdf5', monitor='val_acc', verbose=1, save_best_only=True, mode='auto')
+checkpoint = ModelCheckpoint('output/' + dataset + '/categorical_crossentropy/weights.{epoch:03d}-{val_acc:.4f}.hdf5', monitor='val_acc', verbose=1, save_best_only=True, mode='auto')
 # adam = Adam(lr=1e-4, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
 
 # model.compile(optimizer=adam, loss='binary_crossentropy', metrics=['accuracy'])

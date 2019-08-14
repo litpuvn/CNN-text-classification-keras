@@ -13,7 +13,10 @@ import csv
 
 
 print('Loading data')
-x, y, vocabulary, vocabulary_inv, label_voc, label_voc_inv = load_need_data()
+dataset = 'sandy'
+best_weight = 'weights.002-0.1179'
+
+x, y, vocabulary, vocabulary_inv, label_voc, label_voc_inv = load_need_data(dataset=dataset)
 
 # x.shape -> (10662, 56)
 # y.shape -> (10662, 2)
@@ -68,16 +71,9 @@ output = Dense(units=label_size, activation='softmax')(dropout)
 
 # this creates a model that includes
 model = Model(inputs=inputs, outputs=output)
-#
-# checkpoint = ModelCheckpoint('output/cross_entropy/weights.{epoch:03d}-{val_acc:.4f}.hdf5', monitor='val_acc', verbose=1, save_best_only=True, mode='auto')
-# # adam = Adam(lr=1e-4, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
-#
-# # model.compile(optimizer=adam, loss='binary_crossentropy', metrics=['accuracy'])
-# model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['acc'])
-# # model.compile(optimizer=adam, loss='cosine_proximity', metrics=['accuracy'])
-# print("Traning Model...")
-# model.fit(X_train, y_train, batch_size=batch_size, epochs=epochs, verbose=1, callbacks=[checkpoint], validation_data=(X_test, y_test))  # starts training
-#
+
+weights_path = 'output/' + dataset + '/categorical_crossentropy/' + best_weight + '.hdf5'
+model.load_weights(weights_path)
 
 y_hat = model.predict(x)
 y_dim = y_hat.shape[1]
@@ -85,7 +81,7 @@ y_dim = y_hat.shape[1]
 max_label_per_day = 25
 average_label_per_day = 3
 
-avg_prob = 1.0 / max_label_per_day
+avg_prob = 1.0 / 1
 
 y_labels = []
 
@@ -111,7 +107,7 @@ for item_y in y_hat:
 
     y_labels.append(tmp_label)
 
-with open('need_data/predicted_need.csv', 'w',  newline='') as writer:
+with open('need_data/' + dataset + '_predicted_need.csv', 'w',  newline='') as writer:
     # csv_writer = csv.writer(writer, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
     for index, item_x in enumerate(x):
         current_label = y_labels[index]
